@@ -10,6 +10,20 @@ enum class BufferAction {
     ReleaseJump,
 };
 
+// What happened to a buffered tap (used for on-screen debug messages).
+enum class BufferNote {
+    None,
+    Fired,            // landed inside the window, buffered jump was fired
+    Expired,          // window ran out before a jump could be fired
+    LandedWhileHeld,  // landed but the button was still considered held
+};
+
+struct BufferReport {
+    BufferNote note = BufferNote::None;
+    float elapsed = 0.f;   // seconds since the tap
+    bool grounded = false; // were we on the ground when this was decided
+};
+
 class GroundedJumpBuffer {
 public:
     // Forget everything (death, mode change, setting turned off).
@@ -17,6 +31,7 @@ public:
         m_state = State::Idle;
         m_elapsed = 0.f;
         m_held = false;
+        m_report = {};
     }
 
     // The player pressed jump. `airborne` is true if they were not on the ground.
@@ -49,6 +64,7 @@ public:
             case State::Armed:
                 m_elapsed += dt;
                 if (m_elapsed > windowSeconds) {
+                    m_report = {BufferNote::Expired, m_elapsed, grounded};
                     m_state = State::Idle; // tapped too early
                     return BufferAction::None;
                 }
@@ -57,10 +73,12 @@ public:
                 }
                 if (m_held) {
                     // Still holding: the game's own hold-to-jump covers this.
+                    m_report = {BufferNote::LandedWhileHeld, m_elapsed, true};
                     m_state = State::Idle;
                     return BufferAction::None;
                 }
                 // Tapped and released in the air, now landed inside the window.
+                m_report = {BufferNote::Fired, m_elapsed, true};
                 m_state = State::Pressing;
                 m_elapsed = 0.f;
                 m_held = true;
@@ -78,6 +96,13 @@ public:
         return BufferAction::None;
     }
 
+    // Returns the latest report once, then clears it.
+    BufferReport takeReport() {
+        BufferReport r = m_report;
+        m_report = {};
+        return r;
+    }
+
 private:
     enum class State { Idle, Armed, Pressing };
 
@@ -86,4 +111,5 @@ private:
     State m_state = State::Idle;
     float m_elapsed = 0.f;
     bool m_held = false;
+    BufferReport m_report;
 };
