@@ -1,5 +1,8 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PlayerObject.hpp>
+#include <Geode/ui/Notification.hpp>
+
+#include <chrono>
 
 #include "GroundedJumpBuffer.hpp"
 
@@ -13,6 +16,21 @@ namespace {
     float bufferWindowSeconds() {
         auto ms = Mod::get()->getSettingValue<int64_t>("buffer-window-ms");
         return static_cast<float>(ms) / 1000.f;
+    }
+
+    bool indicatorEnabled() {
+        return Mod::get()->getSettingValue<bool>("show-indicator");
+    }
+
+    // Small on-screen message for testing. Limited to once per 400 ms so that
+    // fast repeated fires don't pile up a queue of messages.
+    void flashIndicator() {
+        using Clock = std::chrono::steady_clock;
+        static Clock::time_point lastShown{};
+        auto now = Clock::now();
+        if (now - lastShown < std::chrono::milliseconds(400)) return;
+        lastShown = now;
+        Notification::create("Buffered jump fired", NotificationIcon::Success, 0.4f)->show();
     }
 
     // v0.1 only buffers the plain cube, and only for real players in a level.
@@ -58,6 +76,7 @@ class $modify(BufferedPlayerObject, PlayerObject) {
         switch (m_fields->buffer.onUpdate(dt, m_isOnGround, bufferWindowSeconds())) {
             case BufferAction::PressJump:
                 log::debug("Input Buffer: firing buffered jump");
+                if (indicatorEnabled()) flashIndicator();
                 // Calling PlayerObject:: here runs the game's original code,
                 // so our own hook above does not see (or re-trigger on) it.
                 PlayerObject::pushButton(PlayerButton::Jump);

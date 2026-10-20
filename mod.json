@@ -5,7 +5,7 @@
 	},
 	"id": "shalomp.input-buffer",
 	"name": "Input Buffer",
-	"version": "v0.1.0",
+	"version": "v0.1.1",
 	"developer": "Shalomp67",
 	"description": "Configurable grounded-jump input buffer (cube mode).",
 	"settings": {
@@ -22,6 +22,12 @@
 			"default": 16,
 			"min": 1,
 			"max": 50
+		},
+		"show-indicator": {
+			"type": "bool",
+			"name": "Show message when buffer fires",
+			"description": "Flashes a small message each time the mod fires a buffered jump. Useful for testing; turn off when you're done.",
+			"default": true
 		}
 	}
 }

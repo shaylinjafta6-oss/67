@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(InputBuffer VERSION 0.1.0)
+project(InputBuffer VERSION 0.1.1)
 
 add_library(${PROJECT_NAME} SHARED main.cpp)
 
