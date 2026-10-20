@@ -1,0 +1,27 @@
+{
+	"geode": "5.11.2",
+	"gd": {
+		"android": "2.2081"
+	},
+	"id": "shalomp.input-buffer",
+	"name": "Input Buffer",
+	"version": "v0.1.0",
+	"developer": "Shalomp67",
+	"description": "Configurable grounded-jump input buffer (cube mode).",
+	"settings": {
+		"buffer-enabled": {
+			"type": "bool",
+			"name": "Grounded jump buffer",
+			"description": "If you tap jump in the air shortly before landing, the jump happens when you land.",
+			"default": true
+		},
+		"buffer-window-ms": {
+			"type": "int",
+			"name": "Buffer window (ms)",
+			"description": "How long before landing a tap still counts. 16 ms is about one frame at 60 FPS.",
+			"default": 16,
+			"min": 1,
+			"max": 50
+		}
+	}
+}
