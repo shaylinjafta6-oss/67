@@ -1,0 +1,39 @@
+{
+	"geode": "5.11.2",
+	"gd": {
+		"android": "2.2081"
+	},
+	"id": "shalomp.input-buffer",
+	"name": "Input Buffer",
+	"version": "v0.1.3",
+	"developer": "Shalomp67",
+	"description": "Configurable grounded-jump input buffer (cube mode).",
+	"settings": {
+		"buffer-enabled": {
+			"type": "bool",
+			"name": "Grounded jump buffer",
+			"description": "If you tap jump in the air shortly before landing, the jump happens when you land.",
+			"default": true
+		},
+		"buffer-window-ms": {
+			"type": "int",
+			"name": "Buffer window (ms)",
+			"description": "How long before landing a tap still counts (1-200 ms). 16 ms is about one frame at 60 FPS. The time is measured from your tap to touchdown.",
+			"default": 16,
+			"min": 1,
+			"max": 200
+		},
+		"show-indicator": {
+			"type": "bool",
+			"name": "Show message when buffer fires",
+			"description": "Flashes a small message each time the mod fires a buffered jump. Useful for testing; turn off when you're done.",
+			"default": true
+		},
+		"debug-messages": {
+			"type": "bool",
+			"name": "Debug messages",
+			"description": "Shows step-by-step messages for each tap (PUSH, REL, FIRED/EXPIRED). For testing only; turn off for normal play.",
+			"default": true
+		}
+	}
+}
